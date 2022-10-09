@@ -1,0 +1,80 @@
+<html>
+  <head> </head>
+  <body>
+    <div id="settings" style="width: 100%; height: 10%">
+      <label for="#rotation">Rotation:</label>
+      <input
+        type="range"
+        id="rotation"
+        min="-360"
+        max="360"
+        step="1"
+        oninput="setFlag()"
+      />
+      <label for="#flag">Flag:</label>
+      <select id="flag" oninput="setFlag()"></select>
+      <label for="bg">Background Color</label>
+      <input type="color" id="bg" value="#ffffff" oninput="setFlag()" />
+    </div>
+    <div id="svg_placeholder" style="width: 100%; height: 90%"></div>
+    <script>
+      const flags = {
+        rainbow: [
+          "#FF0018",
+          "#FFA52C",
+          "#FFFF41",
+          "#008018",
+          "#0000F9",
+          "#86007D",
+        ],
+        trans: ["#5BCEFA", "#F5A9B8", "white", "#F5A9B8", "#5BCEFA"],
+      };
+      const flagSelector = document.getElementById("flag");
+      for (const flagId of Object.keys(flags)) {
+        const option = document.createElement("option");
+        option.innerText = flagId;
+        option.setAttribute("id", flagId);
+        flagSelector.appendChild(option);
+      }
+      function setFlag() {
+        const bgColor = document.getElementById("bg").value;
+        document.getElementById("svg_placeholder").style.backgroundColor =
+          bgColor;
+        const flagElem = document.getElementById("flag");
+        const flag = flagElem.options[flagElem.selectedIndex].value;
+        const colors = flags[flag];
+        const height = 18;
+        const width = 100;
+        var y = -3.5;
+        const x = -5;
+        const color_height = height / colors.length;
+        for (const color of colors) {
+          console.log("color", color);
+          let colorRect = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "rect"
+          );
+          colorRect.setAttribute("x", x);
+          colorRect.setAttribute("y", y);
+          colorRect.setAttribute("width", width);
+          colorRect.setAttribute("height", color_height);
+          colorRect.setAttribute("fill", color);
+          y += color_height;
+
+          document.getElementById("flagContainer").appendChild(colorRect);
+        }
+        const rotation = document.getElementById("rotation").value;
+        document
+          .getElementById("flagContainer")
+          .setAttribute("transform", `rotate(${rotation} 5.5 5.5)`);
+      }
+      fetch("data/templates/inverted.svg")
+        .then((data) => data.text())
+        .then((data) => {
+          console.log(data);
+          document.getElementById("svg_placeholder").innerHTML = data;
+          setFlag();
+        });
+    </script>
+  </body>
+</html>
