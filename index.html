@@ -15,7 +15,7 @@
       <select id="flag" oninput="setFlag()"></select>
       <label for="bg">Background Color</label>
       <input type="color" id="bg" value="#ffffff" oninput="setFlag()" />
-      <a id="downloadlink" href="">Download (use save link as)</a>
+      <a id="downloadlink" href="">Download</a>
     </div>
     <div id="svg_placeholder" style="width: 100%; height: 90%"></div>
     <script>
@@ -96,13 +96,14 @@
         document
           .getElementById("flagContainer")
           .setAttribute("transform", `rotate(${rotation} 5.5 5.5)`);
-        document
-          .getElementById("downloadlink")
-          .setAttribute(
-            "href",
-            "data:image/svg+xml;base64," +
-              btoa(document.getElementById("svg_placeholder").innerHTML)
-          );
+        const linkElem = document.getElementById("downloadlink");
+
+        linkElem.setAttribute(
+          "href",
+          "data:image/svg+xml;base64," +
+            btoa(document.getElementById("svg_placeholder").innerHTML)
+        );
+        linkElem.setAttribute("download", `${flag}.svg`);
       }
       fetch("data/templates/inverted.svg")
         .then((data) => data.text())
