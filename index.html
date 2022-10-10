@@ -20,7 +20,14 @@
     <div id="svg_placeholder" style="width: 100%; height: 90%"></div>
     <script>
       const flags = {
-        rainbow: ["#FF0018", "#FFA52C", "#FFFF41", "#008018", "#0000F9", "#86007D"],
+        rainbow: [
+          "#FF0018",
+          "#FFA52C",
+          "#FFFF41",
+          "#008018",
+          "#0000F9",
+          "#86007D",
+        ],
         trans: ["#5BCEFA", "#F5A9B8", "white", "#F5A9B8", "#5BCEFA"],
         agender: ["white", "#b9b9b9", "black", "#b8f483"],
         aromantic: ["white", "#a9a9a9", "black", "#a7d379", "#3da542"],
@@ -30,7 +37,15 @@
         gay: ["#750787", "#004dff", "#008026", "#ffed00", "#ff8c00", "#e40303"],
         genderfluid: ["#f5f5f5", "#2c2c2c", "#ff75a2", "#be18d6", "#333ebd"],
         genderqueer: ["#4a8123", "black", "#b57edc"],
-        lesbian_7: ["black", "#ff9a56", "#ef7627", "#d52d00", "#d162a4", "#b55690", "#a30262"],
+        lesbian_7: [
+          "black",
+          "#ff9a56",
+          "#ef7627",
+          "#d52d00",
+          "#d162a4",
+          "#b55690",
+          "#a30262",
+        ],
         lesbian_5: ["#A30262", "#D362A4", "black", "#FF9A56", "#D52D00"],
         nonbinary: ["#2C2C2C", "#9C59D1", "#FCFCFC", "#FCF434"],
         pansexual: ["#21b1ff", "#ffd800", "#ff218c"],
@@ -43,7 +58,7 @@
         option.setAttribute("id", flagId);
         flagSelector.appendChild(option);
       }
-      function create_svg_element(tag, attrs={}) {
+      function create_svg_element(tag, attrs = {}) {
         let elem = document.createElementNS("http://www.w3.org/2000/svg", tag);
         for (const key of Object.keys(attrs)) {
           elem.setAttribute(key, attrs[key]);
@@ -52,51 +67,69 @@
       }
       function setFlag() {
         const bgColor = document.getElementById("bg").value;
-        document.getElementById("jh_logo").style.backgroundColor =
-          bgColor;
+        document.getElementById("jh_logo").style.backgroundColor = bgColor;
         const flagElem = document.getElementById("flag");
         const flag = flagElem.options[flagElem.selectedIndex].value;
         const colors = flags[flag];
         const flagContainer = document.getElementById("flagContainer");
-        while (flagContainer.firstChild) { flagContainer.removeChild(flagContainer.lastChild); }
+        while (flagContainer.firstChild) {
+          flagContainer.removeChild(flagContainer.lastChild);
+        }
         const defs = document.querySelector("#jh_logo>defs");
-        while (defs.firstChild) { defs.removeChild(defs.firstChild); }
+        while (defs.firstChild) {
+          defs.removeChild(defs.firstChild);
+        }
         defs.appendChild(gradients[flag]);
-        flagContainer.appendChild(create_svg_element("rect", {
-          x: -5,
-          y: -3.5,
-          width: 20,
-          height: 20,
-          style: "fill:url(#gradient_" +flag+ ");fill-opacity:1;fill-rule:evenodd;",
-        }));
+        flagContainer.appendChild(
+          create_svg_element("rect", {
+            x: -3.5,
+            y: -3.5,
+            width: 18,
+            height: 18,
+            style:
+              "fill:url(#gradient_" +
+              flag +
+              ");fill-opacity:1;fill-rule:evenodd;",
+          })
+        );
         const rotation = document.getElementById("rotation").value;
         document
           .getElementById("flagContainer")
           .setAttribute("transform", `rotate(${rotation} 5.5 5.5)`);
-        document.getElementById("downloadlink").setAttribute(
-          "href", "data:image/svg+xml;base64," + btoa(document.getElementById("svg_placeholder").innerHTML)
-        );
+        document
+          .getElementById("downloadlink")
+          .setAttribute(
+            "href",
+            "data:image/svg+xml;base64," +
+              btoa(document.getElementById("svg_placeholder").innerHTML)
+          );
       }
       fetch("data/templates/inverted.svg")
         .then((data) => data.text())
         .then((data) => {
           console.log(data);
           for (const flagId of Object.keys(flags)) {
-            const gradient = create_svg_element("linearGradient", {id: "gradient_" + flagId});
+            const gradient = create_svg_element("linearGradient", {
+              id: "gradient_" + flagId,
+            });
             const colors = flags[flagId];
             const step_size = 1 / colors.length;
             var offset = 0;
             colors.forEach((color, idx) => {
-              gradient.appendChild(create_svg_element("stop", {
-                style: "stop-color:" + color + ";stop-opacity:1",
-                offset: offset,
-                id: flagId + idx + "_b",
-              }));
-              gradient.appendChild(create_svg_element("stop", {
-                style: "stop-color:" + color + ";stop-opacity:1",
-                offset: offset+step_size,
-                id: flagId + idx + "_e",
-              }));
+              gradient.appendChild(
+                create_svg_element("stop", {
+                  style: "stop-color:" + color + ";stop-opacity:1",
+                  offset: offset,
+                  id: flagId + idx + "_b",
+                })
+              );
+              gradient.appendChild(
+                create_svg_element("stop", {
+                  style: "stop-color:" + color + ";stop-opacity:1",
+                  offset: offset + step_size,
+                  id: flagId + idx + "_e",
+                })
+              );
               offset += step_size;
             });
             gradients[flagId] = gradient;
