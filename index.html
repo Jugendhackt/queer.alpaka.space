@@ -11,6 +11,17 @@
         step="1"
         oninput="setFlag()"
       />
+      <label for="#animate_speed">Speed:</label>
+      <input
+        type="range"
+        id="animate_speed"
+        min="0.5"
+        max="10"
+        step="0.1"
+        oninput="setFlag()"
+      />
+      <label for="#animate">Animate</label>
+      <input type="checkbox" id="animate" oninput="setFlag()"/>
       <label for="#flag">Flag:</label>
       <select id="flag" oninput="setFlag()"></select>
       <label for="bg">Background Color</label>
@@ -76,6 +87,7 @@
       function setFlag() {
         const bgColor = document.getElementById("bg").value;
         document.getElementById("jh_logo").style.backgroundColor = bgColor;
+	document.bgColor = bgColor; 
         const flagElem = document.getElementById("flag");
         const flag = flagElem.options[flagElem.selectedIndex].value;
         const colors = flags[flag];
@@ -100,10 +112,26 @@
               ");fill-opacity:1;fill-rule:evenodd;",
           })
         );
-        const rotation = document.getElementById("rotation").value;
+        const rotation = Number(document.getElementById("rotation").value);
+        const animate = document.getElementById("animate").checked;
+        const animate_speed = document.getElementById("animate_speed").value;
         document
           .getElementById("flagContainer")
           .setAttribute("transform", `rotate(${rotation} 5.5 5.5)`);
+	if (animate){
+	  const animation = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+	  animation.setAttribute("xmlns", "http://www.w3.org/2000/svg"); 
+	  animation.setAttribute("attributeName", "transform");
+	  animation.setAttribute("attributeType", "XML");
+	  animation.setAttribute("type", "rotate");
+	  animation.setAttribute("from", `${rotation} 5.5 5.5`);
+	  animation.setAttribute("to", `${rotation + 360} 5.5 5.5`);
+	  animation.setAttribute("dur", `${animate_speed}s`);
+	  animation.setAttribute("repeatCount", "indefinite");
+	  document
+            .getElementById("flagContainer")
+	    .appendChild(animation);
+	}
         const linkElem = document.getElementById("downloadlink");
 
         linkElem.setAttribute(
